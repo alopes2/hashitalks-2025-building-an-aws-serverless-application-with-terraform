@@ -1,0 +1,11 @@
+POST https://XXX.execute-api.eu-central-1.amazonaws.com/live/movies
+Content-Type: application/json
+
+{
+    "title": "My Super Movie",
+    "genres": [
+        "Adventure",
+        "Sci-Fi"
+    ],
+    "rating": 8.0
+}

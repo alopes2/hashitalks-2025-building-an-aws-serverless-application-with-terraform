@@ -1,0 +1,46 @@
+name: Deploy Email Movie Notification Lambda
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - apps/email-movie-notification/**/*
+      - .github/workflows/deploy-api-email-movie-notification-lambda.yml
+
+defaults:
+  run:
+    working-directory: apps/email-movie-notification/
+
+jobs:
+  terraform:
+    name: 'Deploy email-movie-notification Lambda'
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Configure AWS Credentials Action For GitHub Actions
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Install packages
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Zip build
+        run: zip -r -j main.zip ./build
+
+      - name: Update Lambda code
+        run: aws lambda update-function-code --function-name=email-movie-notification --zip-file=fileb://main.zip
