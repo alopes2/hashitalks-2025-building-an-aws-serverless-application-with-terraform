@@ -12,6 +12,8 @@ resource "aws_api_gateway_deployment" "movies_api_deployment" {
       aws_api_gateway_resource.movie_resource.id,
       module.get_movie_method.id,
       module.get_movie_method.integration_id,
+      module.create_movie_method.id,
+      module.create_movie_method.integration_id,
     ]))
   }
 
@@ -47,6 +49,18 @@ module "get_movie_method" {
   resource_path        = aws_api_gateway_resource.movie_resource.path
   integration_uri      = module.get_movie_lambda.invoke_arn
   lambda_function_name = module.get_movie_lambda.name
+  execution_arn        = aws_api_gateway_rest_api.movies_api.execution_arn
+  stage_name           = aws_api_gateway_stage.live.stage_name
+}
+
+module "create_movie_method" {
+  source               = "./modules/rest-api-method"
+  api_id               = aws_api_gateway_rest_api.movies_api.id
+  http_method          = "POST"
+  resource_id          = aws_api_gateway_resource.movies_root_resource.id
+  resource_path        = aws_api_gateway_resource.movies_root_resource.path
+  integration_uri      = module.create_movie_lambda.invoke_arn
+  lambda_function_name = module.create_movie_lambda.name
   execution_arn        = aws_api_gateway_rest_api.movies_api.execution_arn
   stage_name           = aws_api_gateway_stage.live.stage_name
 }

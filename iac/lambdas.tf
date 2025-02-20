@@ -6,3 +6,12 @@ module "get_movie_lambda" {
     TABLE_NAME = aws_dynamodb_table.movies.name
   }
 }
+
+module "create_movie_lambda" {
+  source   = "./modules/lambda"
+  name     = "create-movie"
+  policies = [data.aws_iam_policy_document.create_movie_item.json]
+  environment_variables = {
+    TABLE_NAME = aws_dynamodb_table.movies.name
+  }
+}
