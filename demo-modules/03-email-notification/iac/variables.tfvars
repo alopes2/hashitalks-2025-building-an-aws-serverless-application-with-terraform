@@ -1,3 +1,3 @@
 region            = "eu-central-1"
-email_identity    = "YOUR_EMAIL"
-destination_email = "YOUR_EMAIL"
+email_identity    = "rigapev356@envoes.com"
+destination_email = "rigapev356@envoes.com"
